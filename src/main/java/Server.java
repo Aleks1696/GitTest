@@ -14,25 +14,43 @@ import java.util.concurrent.TimeUnit;
 public class Server {
 
     public static void main(String[] args) throws Exception {
-        List<SocketChannel> listOfUsersSockets = new ArrayList<>();
+        List<SocketChannel> clientSockets = new ArrayList<>();
         ByteBuffer buffer = ByteBuffer.allocate(128);
+        int port1 = 30000;
+        int port2 = 20000;
+        int port3 = 40000;
+        int port4 = 50000;
+        newClient(port1, buffer, clientSockets);
+        newClient(port2, buffer, clientSockets);
+        newClient(port3, buffer, clientSockets);
+        newClient(port4, buffer, clientSockets);
 
+    }
+    private static void newClient(int port, ByteBuffer buffer, List<SocketChannel> clientSockets){
 
         Runnable task1 = () -> {
+            String clientName;
             try {
                 ServerSocketChannel channel = ServerSocketChannel.open();
-                channel.bind(new InetSocketAddress(30000));
+                channel.bind(new InetSocketAddress(port));
                 SocketChannel socket = channel.accept();
-
+                clientSockets.add(socket);
 
                 int bytes = socket.read(buffer);
-                System.out.println(new String(buffer.array(), 0, bytes) + " joined...");
-                buffer.clear();
+                clientName = new String(buffer.array(),0, bytes);
+                buffer.put((" joined...").getBytes());
+                messageProcessor(socket, clientSockets, buffer);
+
                 while (true){
+                    bytes = socket.read(buffer);
+                    String message = new String(buffer.array(), 0, bytes);
+                    buffer.clear();
+                    buffer.put(clientName.getBytes());
+                    buffer.put((": ").getBytes());
+                    buffer.put(message.getBytes());
+                    messageProcessor(socket, clientSockets, buffer);
 
                 }
-
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -40,53 +58,29 @@ public class Server {
         ExecutorService es1 = Executors.newSingleThreadExecutor();
         es1.execute(task1);
         if (!es1.isTerminated()) {
-            es1.awaitTermination(1, TimeUnit.SECONDS);
+            try {
+                es1.awaitTermination(1, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         es1.shutdown();
-
-
-            try {
-                ServerSocketChannel channel = ServerSocketChannel.open();
-                channel.bind(new InetSocketAddress(20000));
-                SocketChannel socket = channel.accept();
-
-                listOfUsersSockets.add(socket);
-
-                int bytes = socket.read(buffer);
-                System.out.println(new String(buffer.array(), 0, bytes) + " joined...");
-                buffer.clear();
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-
-        readMessage(listOfUsersSockets, buffer);
     }
 
-    public static void readMessage(List<SocketChannel> listOfUsersSockets, ByteBuffer buffer) {
-        while (true) {
-            try {
-//                listOfUsersSockets.get(0).read(buffer);
-                for (SocketChannel socket : listOfUsersSockets) {
+    private static void messageProcessor(SocketChannel activeSocket, List<SocketChannel> clientSockets,
+                                         ByteBuffer buffer){
 
-                    socket.read(buffer);
+        for (SocketChannel socket : clientSockets){
+            if (socket != activeSocket){
+                try {
+                    buffer.flip();
+                    socket.write(buffer);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                buffer.flip();
-//                for (SocketChannel socket : listOfUsersSockets) {
-//                    socket.write(buffer);
-//                }
-                listOfUsersSockets.get(1).write(buffer);
-                buffer.clear();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
+        buffer.clear();
     }
 
-    public static void sendMessage() {
-
-    }
 }
