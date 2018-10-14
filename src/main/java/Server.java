@@ -9,35 +9,84 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Server {
 
-    public static void main(String[] args) {
-        List<ServerSocketChannel> listOfClients = new ArrayList<>();
+    public static void main(String[] args) throws Exception {
+        List<SocketChannel> listOfUsersSockets = new ArrayList<>();
         ByteBuffer buffer = ByteBuffer.allocate(128);
 
-        Runnable task = () -> {
-            for (int i = 0; i < 25; i++) {
-                try {
-                    ServerSocketChannel channel = ServerSocketChannel.open();
-                    channel.bind(new InetSocketAddress(30000));
-                    listOfClients.add(channel);
-                    SocketChannel socket = channel.accept();
-                    int bytes = socket.read(buffer);
-                    System.out.println(new String(buffer.array(), 0, bytes) + " joined...");
-                    buffer.clear();
-                } catch (IOException e) {
-                    e.printStackTrace();
+
+        Runnable task1 = () -> {
+            try {
+                ServerSocketChannel channel = ServerSocketChannel.open();
+                channel.bind(new InetSocketAddress(30000));
+                SocketChannel socket = channel.accept();
+
+
+                int bytes = socket.read(buffer);
+                System.out.println(new String(buffer.array(), 0, bytes) + " joined...");
+                buffer.clear();
+                while (true){
+
                 }
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         };
-        ExecutorService es = Executors.newSingleThreadExecutor();
-        es.submit(task);
-
-        while (true) {
-
+        ExecutorService es1 = Executors.newSingleThreadExecutor();
+        es1.execute(task1);
+        if (!es1.isTerminated()) {
+            es1.awaitTermination(1, TimeUnit.SECONDS);
         }
+        es1.shutdown();
 
+
+            try {
+                ServerSocketChannel channel = ServerSocketChannel.open();
+                channel.bind(new InetSocketAddress(20000));
+                SocketChannel socket = channel.accept();
+
+                listOfUsersSockets.add(socket);
+
+                int bytes = socket.read(buffer);
+                System.out.println(new String(buffer.array(), 0, bytes) + " joined...");
+                buffer.clear();
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+
+        readMessage(listOfUsersSockets, buffer);
+    }
+
+    public static void readMessage(List<SocketChannel> listOfUsersSockets, ByteBuffer buffer) {
+        while (true) {
+            try {
+//                listOfUsersSockets.get(0).read(buffer);
+                for (SocketChannel socket : listOfUsersSockets) {
+
+                    socket.read(buffer);
+                }
+                buffer.flip();
+//                for (SocketChannel socket : listOfUsersSockets) {
+//                    socket.write(buffer);
+//                }
+                listOfUsersSockets.get(1).write(buffer);
+                buffer.clear();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void sendMessage() {
 
     }
 }
