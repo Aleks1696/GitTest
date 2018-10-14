@@ -1,32 +1,34 @@
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class Server {
+    private static int portNumber = 30000;
+    private static boolean signalForCreatingNewClient = true;
+
+    public static void setSignalForCreatingNewClient(boolean signalForCreatingNewClient) {
+        Server.signalForCreatingNewClient = signalForCreatingNewClient;
+    }
 
     public static void main(String[] args) throws Exception {
         List<SocketChannel> clientSockets = new ArrayList<>();
         ByteBuffer buffer = ByteBuffer.allocate(128);
-        int port1 = 30000;
-        int port2 = 20000;
-        int port3 = 40000;
-        int port4 = 50000;
-        newClient(port1, buffer, clientSockets);
-        newClient(port2, buffer, clientSockets);
-        newClient(port3, buffer, clientSockets);
-        newClient(port4, buffer, clientSockets);
 
+        while (signalForCreatingNewClient){
+            newClient(portNumber, buffer, clientSockets);
+            portNumber++;
+            signalForCreatingNewClient = false;
+        }
     }
-    private static void newClient(int port, ByteBuffer buffer, List<SocketChannel> clientSockets){
+
+    private static void newClient(int port, ByteBuffer buffer, List<SocketChannel> clientSockets) {
 
         Runnable task1 = () -> {
             String clientName;
@@ -37,17 +39,13 @@ public class Server {
                 clientSockets.add(socket);
 
                 int bytes = socket.read(buffer);
-                clientName = new String(buffer.array(),0, bytes);
+                clientName = new String(buffer.array(), 0, bytes);
                 buffer.put((" joined...").getBytes());
                 messageProcessor(socket, clientSockets, buffer);
 
-                while (true){
+                while (true) {
                     bytes = socket.read(buffer);
-                    String message = new String(buffer.array(), 0, bytes);
-                    buffer.clear();
-                    buffer.put(clientName.getBytes());
-                    buffer.put((": ").getBytes());
-                    buffer.put(message.getBytes());
+                    joinMessage(clientName, buffer, bytes);
                     messageProcessor(socket, clientSockets, buffer);
 
                 }
@@ -57,6 +55,7 @@ public class Server {
         };
         ExecutorService es1 = Executors.newSingleThreadExecutor();
         es1.execute(task1);
+
         if (!es1.isTerminated()) {
             try {
                 es1.awaitTermination(1, TimeUnit.SECONDS);
@@ -68,10 +67,9 @@ public class Server {
     }
 
     private static void messageProcessor(SocketChannel activeSocket, List<SocketChannel> clientSockets,
-                                         ByteBuffer buffer){
-
-        for (SocketChannel socket : clientSockets){
-            if (socket != activeSocket){
+                                         ByteBuffer buffer) {
+        for (SocketChannel socket : clientSockets) {
+            if (socket != activeSocket) {
                 try {
                     buffer.flip();
                     socket.write(buffer);
@@ -81,6 +79,14 @@ public class Server {
             }
         }
         buffer.clear();
+    }
+
+    private static void joinMessage(String clientName, ByteBuffer buffer, int bytes) {
+        String message = new String(buffer.array(), 0, bytes);
+        buffer.clear();
+        buffer.put(clientName.getBytes());
+        buffer.put((": ").getBytes());
+        buffer.put(message.getBytes());
     }
 
 }

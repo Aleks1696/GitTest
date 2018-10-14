@@ -1,3 +1,4 @@
+package clients;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -7,7 +8,7 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Client2 {
+public class Client1 {
 
     public static void main(String[] args) {
         ByteBuffer buffer = ByteBuffer.allocate(128);
@@ -19,7 +20,7 @@ public class Client2 {
 
         SocketChannel channel;
         try {
-            channel = SocketChannel.open(new InetSocketAddress("127.0.0.1", 20000));
+            channel = SocketChannel.open(new InetSocketAddress("127.0.0.1", 30000));
             channel.write(buffer);
             buffer.clear();
 
