@@ -7,6 +7,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.nio.channels.ServerSocketChannel;
 
 public class MainController {
 
@@ -42,6 +43,7 @@ public class MainController {
 
     @FXML
     public void addNewClientOnClick() {
+        Server.signalToOpenNewPort = true;
         Stage dlgNewContact = new Stage();
         dlgNewContact.setTitle("Add contact");
         dlgNewContact.setResizable(false);
@@ -56,4 +58,4 @@ public class MainController {
     }
 }
 
-}
+

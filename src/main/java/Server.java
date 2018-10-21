@@ -11,22 +11,22 @@ import java.util.concurrent.TimeUnit;
 
 public class Server {
     private static int portNumber = 30000;
-    private static boolean signalForCreatingNewClient = true;
+    private static int numberOfClients = 0;
+    public static boolean signalToOpenNewPort = true;
+    private static List<SocketChannel> clientSockets = new ArrayList<>();
+    private static ByteBuffer buffer = ByteBuffer.allocate(128);
 
-    public static void setSignalForCreatingNewClient(boolean signalForCreatingNewClient) {
-        Server.signalForCreatingNewClient = signalForCreatingNewClient;
-    }
+    public Server(){
+        System.out.println("Server started");
+        while (numberOfClients < 5){
+                newClient(portNumber, buffer, clientSockets);
+                numberOfClients++;
+                portNumber++;
+                signalToOpenNewPort = false;
 
-    public static void main(String[] args) throws Exception {
-        List<SocketChannel> clientSockets = new ArrayList<>();
-        ByteBuffer buffer = ByteBuffer.allocate(128);
-
-        while (signalForCreatingNewClient){
-            newClient(portNumber, buffer, clientSockets);
-            portNumber++;
-            signalForCreatingNewClient = false;
         }
     }
+
 
     private static void newClient(int port, ByteBuffer buffer, List<SocketChannel> clientSockets) {
 
@@ -36,16 +36,16 @@ public class Server {
                 ServerSocketChannel channel = ServerSocketChannel.open();
                 channel.bind(new InetSocketAddress(port));
                 SocketChannel socket = channel.accept();
+                System.out.println("somebody connected");
                 clientSockets.add(socket);
 
                 int bytes = socket.read(buffer);
                 clientName = new String(buffer.array(), 0, bytes);
-                buffer.put((" joined...").getBytes());
+                buffer.put(" joined...".getBytes());
                 messageProcessor(socket, clientSockets, buffer);
 
                 while (true) {
                     bytes = socket.read(buffer);
-                    joinMessage(clientName, buffer, bytes);
                     messageProcessor(socket, clientSockets, buffer);
 
                 }
