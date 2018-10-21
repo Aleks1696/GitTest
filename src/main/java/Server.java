@@ -46,6 +46,7 @@ public class Server {
 
                 while (true) {
                     bytes = socket.read(buffer);
+
                     messageProcessor(socket, clientSockets, buffer);
 
                 }

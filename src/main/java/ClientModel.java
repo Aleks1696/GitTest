@@ -14,6 +14,8 @@ public class ClientModel extends NewClientController{
     private int port;
     private String name;
 
+    private static String merge;
+
     private ByteBuffer buffer;
     private SocketChannel channel;
 
