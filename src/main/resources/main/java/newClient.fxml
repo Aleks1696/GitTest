@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="357.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="NewClientController">
+   <children>
+      <Button layoutX="492.0" layoutY="16.0" mnemonicParsing="false" onAction="#connectToServerOnClick" text="Connect" />
+      <Label layoutX="32.0" layoutY="21.0" text="Nick Name" />
+      <TextField fx:id="fldNickName" layoutX="131.0" layoutY="16.0" prefHeight="25.0" prefWidth="318.0" />
+      <ListView fx:id="lstView" layoutX="32.0" layoutY="54.0" prefHeight="251.0" prefWidth="539.0" />
+      <Button layoutX="509.0" layoutY="316.0" mnemonicParsing="false" onAction="#sendMessageFromClientOnClick" prefHeight="32.0" prefWidth="62.0" text="Send" />
+      <TextField fx:id="fldEnteredText" layoutX="32.0" layoutY="316.0" prefHeight="32.0" prefWidth="468.0" />
+   </children>
+</AnchorPane>
