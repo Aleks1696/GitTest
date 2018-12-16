@@ -22,7 +22,7 @@ public class CreateTable {
             statement.executeLargeUpdate("CREATE TABLE fileSearchHistory " +
                     "(File_request VARCHAR(50) NOT NULL," +
                     "File_path VARCHAR(300) NOT NULL," +
-                    "Date VARCHAR(60))");
+                    "DateFormat VARCHAR(60))");
             statement.close();
 
             connection.close();

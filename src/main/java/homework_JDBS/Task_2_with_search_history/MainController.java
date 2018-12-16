@@ -1,12 +1,11 @@
 package homework_JDBS.Task_2_with_search_history;
 
+import homework_JDBS.Task_2_with_search_history.model.FileModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.homework2.model.ContactModel;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import jdbs.homework_JDBS.Task_2_with_search_history.model.FileModel;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -35,7 +34,7 @@ public class MainController {
     public void searchForFiles() {
         FileSearch fs = new FileSearch();
         FileModel.getFoundFiles().clear();
-        list = FXCollections.observableArrayList(ContactModel.getContacts());
+//        list = FXCollections.observableArrayList(ContactModel.getContacts());
         fs.search(fldDirectory.getText(), fldFileName.getText());
 
         list.setAll(FileModel.getFoundFiles());
@@ -51,7 +50,7 @@ public class MainController {
 
             PreparedStatement statement = connection.prepareStatement(
                     "INSERT INTO fileSearchHistory " +
-                            "(File_request, File_path, Date)" +
+                            "(File_request, File_path, DateFormat)" +
                             "VALUES (?,?,?)");
 
             statement.setString(1, request);

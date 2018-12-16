@@ -1,6 +1,6 @@
 package homework_JDBS.Task_2_with_search_history;
 
-import jdbs.homework_JDBS.Task_2_with_search_history.model.FileModel;
+import homework_JDBS.Task_2_with_search_history.model.FileModel;
 
 public class TempMain {
     public static void main(String[] args) {
