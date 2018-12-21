@@ -18,6 +18,18 @@ public class Update {
         statement.execute();
         statement.getResultSet();       // resultSet can be obtained by calling this method
         statement.close();
+        connection.close();
+    }
+
+    public static void update2() throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(
+                "UPDATE customers_dupl " +
+                        "SET city = 'New Jersey'" +
+                        "WHERE customers_dupl.name IN ('Mascha', 'Riki')");
+        statement.execute();
+        connection.commit();
+        statement.close();
+        connection.close();
     }
 
 

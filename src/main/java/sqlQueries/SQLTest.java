@@ -1,6 +1,7 @@
 package sqlQueries;
 
 //Static imports
+import static sqlQueries.queries.alter.Alter.*;
 import static sqlQueries.queries.createTable.CreateTable.*;
 import static sqlQueries.queries.delete.Delete.*;
 import static sqlQueries.queries.insert.Insert.*;
@@ -44,20 +45,6 @@ import java.sql.*;
 
 public class SQLTest {
 
-    private static String url = "jdbc:mysql://localhost:3306/sql_test?useSSL=false";
-    private static String userName = "myRoot";
-    private static String password = "root";
-
-    private static Connection connection;
-
-    static {
-        try {
-            connection = DriverManager.getConnection(url, userName, password);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
 
         System.out.println(Class.forName("com.mysql.jdbc.Driver"));
@@ -75,11 +62,20 @@ public class SQLTest {
 //        select5();
 //        select6();
 //        select7();
-        select8();
-
-
-
+//        select8();
+//        createTable1();
+//        createTeble2();
+//        insert();
+//        createTabla3();
+//        insertCustomer_Order();
+//        selectJoin();
+//        selectLeftJoin();
+//        selectRightJoin();
+//        selectUnion();
+//        alterAdd();
+//        alterDrop();
+//        alterRenameTable();
+//        update2();
     }
-
 
 }
