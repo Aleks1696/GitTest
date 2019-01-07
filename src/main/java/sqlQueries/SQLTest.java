@@ -1,12 +1,7 @@
 package sqlQueries;
 
 //Static imports
-import static sqlQueries.queries.alter.Alter.*;
-import static sqlQueries.queries.createTable.CreateTable.*;
-import static sqlQueries.queries.delete.Delete.*;
-import static sqlQueries.queries.insert.Insert.*;
-import static sqlQueries.queries.select.Select.*;
-import static sqlQueries.queries.update.Update.*;
+import static sqlQueries.queries.join.Join.*;
 
 import java.sql.*;
 
@@ -76,6 +71,11 @@ public class SQLTest {
 //        alterDrop();
 //        alterRenameTable();
 //        update2();
+//        joinWithWhereCondition();
+//        innerJoin();
+//        leftJoin();
+//        rightJoin();
+        union();
     }
 
 }
