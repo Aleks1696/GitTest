@@ -91,7 +91,5 @@ public class Formatter_test {
         System.out.printf("%nArgument index used: %3$d", 3,5,62,1);
         System.out.printf("%nArgument index used: %.6s", "not all string will be taken");
 
-
-
     }
 }
